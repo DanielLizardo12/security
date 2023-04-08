@@ -20,6 +20,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final JwtService jwtService;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -30,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // The jwt token will be in the request header under the keyword Authorization
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
+        final String userEmail;
 
         // The jwt token will start with the keyword Bearer, if there is no jwt in the header return
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -39,5 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // The jwt token will start after "Bearer ", so it will start at index 7
         jwt = authHeader.substring(7);
+        userEmail = jwtService.extractUsername(jwt);
     }
 }
