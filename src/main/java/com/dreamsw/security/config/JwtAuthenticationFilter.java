@@ -27,5 +27,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
+        // The jwt token will be in the request header under the keyword Authorization
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+
+        // The jwt token will start with the keyword Bearer, if there is no jwt in the header return
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // The jwt token will start after "Bearer ", so it will start at index 7
+        jwt = authHeader.substring(7);
     }
 }
